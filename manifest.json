@@ -1,12 +1,19 @@
 {
-    "manifest_version": 3,
-    "name": "Download URL Interceptor",
-    "version": "1.0",
-    "permissions": [
-      "downloads",
-      "downloads.open"
-    ],
-    "background": {
-      "service_worker": "src/background.js"
-    }
-  }
+  "manifest_version": 3,
+  "name": "DownloadInterceptor",
+  "version": "1.0",
+  "description": "Intercepts download events and sends them to a local third-party download client via HTTP.",
+  "permissions": [
+    "downloads",
+    "activeTab",
+    "webRequest",
+    "webRequestBlocking",
+    "http://127.0.0.1:*/*"
+  ],
+  "background": {
+    "scripts": ["src/background.js"]
+},
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}
