@@ -1,0 +1,12 @@
+{
+    "manifest_version": 3,
+    "name": "Download URL Interceptor",
+    "version": "1.0",
+    "permissions": [
+      "downloads",
+      "downloads.open"
+    ],
+    "background": {
+      "service_worker": "src/background.js"
+    }
+  }
