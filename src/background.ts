@@ -17,7 +17,7 @@ chrome.downloads.onCreated.addListener(async (downloadItem) => {
   console.log("Sending data to server:", JSON.stringify(data));
 
   // 发送POST请求到服务器
-  fetch("http://127.0.0.1:10389/download", {
+  fetch("http://localhost:10389/download", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
