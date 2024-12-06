@@ -31,7 +31,12 @@
       "https://*/*"
     ],
     "permissions": [
-      "tabs"
+      "downloads",
+      "downloads.open",
+      "activeTab",
+      "storage",
+      "http://127.0.0.1:10389/",
+      "<all_urls>"
     ]
   }
 }

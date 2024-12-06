@@ -1,15 +1,8 @@
 // import type { PlasmoCSConfig } from "plasmo"
 
 // export const config: PlasmoCSConfig = {
-//     matches: ["https://*", "http://*"]
+//    matches: ["<all_urls>"]
 // }
-
-// window.addEventListener("load", () => {
-//     console.log("content script loaded")
-
-//     document.body.style.background = "pink"
-// })
-
 
 // chrome.downloads.onCreated.addListener(async (downloadItem) => {
 //     console.log("Download attempt blocked:", downloadItem.url);
