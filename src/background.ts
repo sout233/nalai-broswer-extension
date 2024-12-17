@@ -26,7 +26,7 @@ async function constructDownloadData(downloadItem: { url: string }) {
       headers: {
         "User-Agent": ua,
         "Accept-Language": language,
-        "headers": headers // 包含从服务器获取的所有响应头
+        ...headers // 包含从服务器获取的所有响应头
       }
     },
     url: downloadItem.url,
