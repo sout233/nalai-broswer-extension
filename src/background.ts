@@ -23,7 +23,7 @@ async function constructDownloadData(downloadItem: { url: string }) {
     version: process.env.PLASMO_PUBLIC_NALAI_PROTOCOL_VERSION || 'unknown',
     browser: {
       name: process.env.PLASMO_BROWSER.toLowerCase() || 'unknown',
-      header: {
+      headers: {
         "User-Agent": ua,
         "Accept-Language": language,
         "headers": headers // 包含从服务器获取的所有响应头
