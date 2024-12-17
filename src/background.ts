@@ -20,9 +20,9 @@ async function constructDownloadData(downloadItem: { url: string }) {
 
   // 构建data对象
   const data = {
+    version: process.env.PLASMO_PUBLIC_NALAI_PROTOCOL_VERSION || 'unknown',
     browser: {
       name: process.env.PLASMO_BROWSER.toLowerCase() || 'unknown',
-      version: process.env.PLASMO_PUBLIC_NALAI_PROTOCOL_VERSION || 'unknown',
       header: {
         "User-Agent": ua,
         "Accept-Language": language,
