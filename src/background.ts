@@ -6,7 +6,6 @@ const downloadHeadersMap: Map<string, Record<string, string>> = new Map();
 // 监听所有下载请求的请求头
 chrome.webRequest.onBeforeSendHeaders.addListener(
   (details) => {
-    // 检查是否是下载请求（可以根据URL或其他条件进一步过滤）
     if (details.type === 'main_frame' || details.type === 'xmlhttprequest') {
       const headers: Record<string, string> = {};
       for (let header of details.requestHeaders) {
@@ -14,11 +13,24 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
       }
       // 将请求头存储到映射中，使用URL作为键
       downloadHeadersMap.set(details.url || "unknown", headers);
+      console.log("GOT HEADERS: ",details.url, headers);
     }
   },
-  { urls: ["<all_urls>"] }, // 监听所有URL
+  { urls: ["<all_urls>"] },
   ["requestHeaders"]
 );
+
+async function getRefererForTab(tabId: number): Promise<string | undefined> {
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab && tab.url) {
+      return tab.url;
+    }
+  } catch (error) {
+    console.error('Failed to get referer:', error);
+  }
+  return undefined;
+}
 
 async function constructDownloadData(downloadItem: { url: string, id: number }) {
   const ua = navigator.userAgent;
@@ -28,8 +40,17 @@ async function constructDownloadData(downloadItem: { url: string, id: number }) 
   let headers: Record<string, string> = {};
   if (downloadHeadersMap.has(downloadItem.url)) {
     headers = downloadHeadersMap.get(downloadItem.url)!;
-    console.log("Headers for downloadItem", downloadItem.id, headers);
+    console.log("Headers for downloadItem", downloadItem.url, ":", headers);
   }
+
+  const referer = await getRefererForTab(downloadItem.id);
+
+  // 手动添加缺失的请求头
+  headers = {
+    ...headers,
+    "Host": new URL(downloadItem.url).hostname, 
+    "Referer": referer || document.referrer,
+  };
 
   // 构建data对象
   const data = {
@@ -47,7 +68,6 @@ async function constructDownloadData(downloadItem: { url: string, id: number }) 
 
   return data;
 }
-
 chrome.downloads.onCreated.addListener(async (downloadItem) => {
   console.log("Download attempt blocked:", downloadItem.url);
 
@@ -65,7 +85,7 @@ chrome.downloads.onCreated.addListener(async (downloadItem) => {
     },
     body: JSON.stringify(data)
   })
-    .then(response => response.json()) // 假设服务器返回JSON
+    .then(response => response.json())
     .then(data => {
       console.log("Success:", data);
     })
