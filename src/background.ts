@@ -1,21 +1,34 @@
 // src/background.ts
 
-async function constructDownloadData(downloadItem: { url: string }) {
-  const ua = navigator.userAgent;
-  const language = navigator.language || navigator.language;
+// 存储下载项ID到请求头的映射
+const downloadHeadersMap: Map<string, Record<string, string>> = new Map();
 
-  // 使用fetch API获取尽可能多的响应头
-  let headers: Record<string, string> = {};
-  try {
-    const response = await fetch(downloadItem.url, { method: 'HEAD' });
-    const allHeaders = response.headers.entries();
-    for (let [key, value] of allHeaders) {
-      if (value) {
-        headers[key] = value;
+// 监听所有下载请求的请求头
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  (details) => {
+    // 检查是否是下载请求（可以根据URL或其他条件进一步过滤）
+    if (details.type === 'main_frame' || details.type === 'xmlhttprequest') {
+      const headers: Record<string, string> = {};
+      for (let header of details.requestHeaders) {
+        headers[header.name] = header.value || '';
       }
+      // 将请求头存储到映射中，使用URL作为键
+      downloadHeadersMap.set(details.url || "unknown", headers);
     }
-  } catch (error) {
-    console.error('Failed to fetch headers:', error);
+  },
+  { urls: ["<all_urls>"] }, // 监听所有URL
+  ["requestHeaders"]
+);
+
+async function constructDownloadData(downloadItem: { url: string, id: number }) {
+  const ua = navigator.userAgent;
+  const language = navigator.language;
+
+  // 从映射中获取对应的请求头
+  let headers: Record<string, string> = {};
+  if (downloadHeadersMap.has(downloadItem.url)) {
+    headers = downloadHeadersMap.get(downloadItem.url)!;
+    console.log("Headers for downloadItem", downloadItem.id, headers);
   }
 
   // 构建data对象
@@ -26,7 +39,7 @@ async function constructDownloadData(downloadItem: { url: string }) {
       headers: {
         "User-Agent": ua,
         "Accept-Language": language,
-        ...headers // 包含从服务器获取的所有响应头
+        ...headers // 包含从请求中获取的所有请求头
       }
     },
     url: downloadItem.url,
@@ -40,9 +53,9 @@ chrome.downloads.onCreated.addListener(async (downloadItem) => {
 
   chrome.downloads.cancel(downloadItem.id);
 
-  const data = await constructDownloadData(downloadItem);
+  const data = await constructDownloadData({ url: downloadItem.url, id: downloadItem.id });
 
-  console.log("Sending data to server:", JSON.stringify(data));
+  console.log("Sending data to server:", data);
 
   // 发送POST请求到服务器
   fetch("http://localhost:10389/download", {
@@ -52,7 +65,7 @@ chrome.downloads.onCreated.addListener(async (downloadItem) => {
     },
     body: JSON.stringify(data)
   })
-    .then(response => response)
+    .then(response => response.json()) // 假设服务器返回JSON
     .then(data => {
       console.log("Success:", data);
     })

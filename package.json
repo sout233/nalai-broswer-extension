@@ -34,7 +34,9 @@
       "downloads",
       "downloads.open",
       "activeTab",
-      "storage"
+      "storage",
+      "webRequest",
+      "webRequestBlocking"
     ]
   }
 }
