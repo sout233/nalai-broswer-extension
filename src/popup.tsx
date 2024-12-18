@@ -1,22 +1,17 @@
-import React from "react"
-import { useState } from "react"
+import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components"
+import React, { useState } from "react"
 
 function IndexPopup() {
   const [data, setData] = useState("")
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        padding: 16
-      }}>
-      <h1>
-        Welcome to your <a href="https://www.plasmo.com">Plasmo</a> Extension!
-      </h1>
-      <input onChange={(e) => setData(e.target.value)} value={data} />
-      <footer>Crafted by @PlasmoHQ</footer>
-    </div>
+    <FluentProvider theme={webLightTheme} className="popup-container w-[1000px] h-[300px]">
+       <div className="popup flex w-[300px] h-[300px] bg-white">
+
+    <Button appearance="primary">Hello Fluent UI React</Button>
+    <Button appearance="primary">Hello Fluent UI React</Button>
+</div>
+</FluentProvider>
   )
 }
 
