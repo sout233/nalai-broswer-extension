@@ -1,5 +1,7 @@
 // src/background.ts
 
+import { info } from "~configs/info";
+
 // 存储下载项ID到请求头的映射
 const downloadHeadersMap: Map<string, Record<string, string>> = new Map();
 
@@ -54,7 +56,7 @@ async function constructDownloadData(downloadItem: { url: string, id: number }) 
 
   // 构建data对象
   const data = {
-    version: process.env.PLASMO_PUBLIC_NALAI_PROTOCOL_VERSION || 'unknown',
+    version: info.protcolVersion.toString() || 'unknown',
     browser: {
       name: process.env.PLASMO_BROWSER.toLowerCase() || 'unknown',
       headers: {
