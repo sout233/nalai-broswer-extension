@@ -51,7 +51,7 @@ function IndexPopup() {
         <div className="flex flex-col mt-4">
           {renderSwitchItem("下载截获", "截获下载事件，此项等价于全局开关")}
           {renderSwitchItem("资源嗅探", "嗅探页面的资源，列如图片、视频等")}
-          <Link className="ml-4">转到全局设置</Link>
+          <Link onClick={() => {chrome.runtime.openOptionsPage()}} className="ml-4">转到全局设置</Link>
         </div>
       )}
     </FluentProvider>
