@@ -70,12 +70,30 @@ async function constructDownloadData(downloadItem: { url: string, id: number }) 
 
   return data;
 }
+
+function sendMessageToNativeApp(action, callback) {
+  const nativeApp = 'org.eu.sout.nalai';
+
+  chrome.runtime.sendNativeMessage(nativeApp, { action }, (response) => {
+      if (chrome.runtime.lastError) {
+          console.error('Error:', chrome.runtime.lastError.message);
+          return;
+      }
+
+      callback(response);
+  });
+}
+
 chrome.downloads.onCreated.addListener(async (downloadItem) => {
   console.log("Download attempt blocked:", downloadItem.url);
 
   chrome.downloads.cancel(downloadItem.id);
 
   const data = await constructDownloadData({ url: downloadItem.url, id: downloadItem.id });
+
+  sendMessageToNativeApp('block', (response) => {
+      console.log("Native app response:", response);
+  });
 
   console.log("Sending data to server:", data);
 

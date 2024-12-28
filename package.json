@@ -37,7 +37,7 @@
       "activeTab",
       "storage",
       "webRequest",
-      "webRequestBlocking"
+      "nativeMessaging"
     ]
   }
 }
