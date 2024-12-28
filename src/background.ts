@@ -84,6 +84,15 @@ function sendMessageToNativeApp(action, callback) {
   });
 }
 
+async function isPortAvailable(port: number): Promise<boolean> {
+  try {
+    const response = await fetch(`http://localhost:${port}`);
+    return response.ok;
+  } catch (error) {
+    return false;
+  }
+}
+
 chrome.downloads.onCreated.addListener(async (downloadItem) => {
   console.log("Download attempt blocked:", downloadItem.url);
 
@@ -91,9 +100,14 @@ chrome.downloads.onCreated.addListener(async (downloadItem) => {
 
   const data = await constructDownloadData({ url: downloadItem.url, id: downloadItem.id });
 
-  sendMessageToNativeApp('block', (response) => {
+  const portAvailable = await isPortAvailable(10389);
+  if (!portAvailable) {
+    sendMessageToNativeApp('block', (response) => {
       console.log("Native app response:", response);
-  });
+    });
+  } else {
+    console.log("Port 10389 is available. Skipping native message.");
+  }
 
   console.log("Sending data to server:", data);
 
