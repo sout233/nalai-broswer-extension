@@ -72,7 +72,7 @@ async function constructDownloadData(downloadItem: { url: string, id: number }) 
 }
 
 function sendMessageToNativeApp(action, callback) {
-  const nativeApp = 'org.eu.sout.nalai';
+  const nativeApp = process.env.PLASMO_BROWSER === 'firefox' ? 'nalai_ext_firefox' : 'org.eu.sout.nalai';
 
   chrome.runtime.sendNativeMessage(nativeApp, { action }, (response) => {
       if (chrome.runtime.lastError) {

@@ -28,6 +28,17 @@
     "typescript": "5.3.3"
   },
   "manifest": {
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "nalai-ext@sout.eu.org",
+        "strict_min_version": "42.0"
+      }
+    },
+    "applications": {
+      "gecko": {
+        "id": "nalai-ext@sout.eu.org"
+      }
+    },
     "host_permissions": [
       "https://*/*"
     ],
