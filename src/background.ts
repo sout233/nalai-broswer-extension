@@ -8,7 +8,7 @@ const downloadHeadersMap: Map<string, Record<string, string>> = new Map();
 // 监听所有下载请求的请求头
 chrome.webRequest.onBeforeSendHeaders.addListener(
   (details) => {
-    if (details.type === 'main_frame' || details.type === 'xmlhttprequest') {
+    if (details.type!==undefined) {
       const headers: Record<string, string> = {};
       for (let header of details.requestHeaders) {
         headers[header.name] = header.value || '';

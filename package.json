@@ -48,7 +48,9 @@
       "activeTab",
       "storage",
       "webRequest",
-      "nativeMessaging"
+      "nativeMessaging",
+      "cookies",
+      "tabs"
     ]
   }
 }
